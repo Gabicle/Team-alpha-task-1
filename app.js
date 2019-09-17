@@ -14,7 +14,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 
-mongoose.connect("mongodb://localhost:27017/AlphaDB", {useNewurlParser:true});
+mongoose.connect("mongodb+srv://admin-gabrielle:Test123@cluster0-od0qv.mongodb.net/AlphaDB", {useNewurlParser:true});
 
 // Creating User Schema
 const userSchema = new mongoose.Schema(
