@@ -12,6 +12,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "10.16.2"
+  },
   "bugs": {
     "url": "https://github.com/Gabicle/Team-alpha-task-1/issues"
   },
