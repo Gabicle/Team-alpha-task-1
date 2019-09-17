@@ -1,0 +1,81 @@
+//jshint esversion:6
+
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const ejs = require('ejs');
+const mongoose = require('mongoose');
+const encrypt = require('mongoose-encryption');
+// const encrypt = require('mongoose-encryption');
+
+const app = express();
+
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
+
+mongoose.connect("mongodb://localhost:27017/AlphaDB", {useNewurlParser:true});
+
+// Creating User Schema
+const userSchema = new mongoose.Schema(
+  {
+    name: String,
+    email: String,
+    password: String
+  }
+) ;
+// Low-quality encryption of passwords
+const secret = "iamontopoftheworld.";
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] });
+
+// Using userSchema to create a mongoose model with collection named User
+const User = new mongoose.model("User", userSchema);
+app.get("/", function(req, res){
+  res.render("home");
+});
+app.get("/login", function(req, res){
+  res.render("login");
+});
+app.get("/register", function(req, res){
+  res.render("register");
+});
+
+app.post("/register", function(req, res){
+  const newUser = new User({
+    name: req.body.fname,
+    email: req.body.username,
+    password: req.body.password
+  });
+  // Saving the new user
+  newUser.save(function(error){
+    if(error){
+      console.log(error);
+    }
+    else{
+      res.render("welcome");
+    }
+  });
+
+});
+
+app.post("/login", function(req,res){
+  const username = req.body.username;
+  const password = req.body.password;
+
+  User.findOne({email: username}, function(error, foundUser){
+    if(error){
+      console.log(error);
+    }
+    else{
+      if(foundUser){
+        if(foundUser.password === password){
+          res.render("welcome");
+        }
+      }
+    }
+  });
+});
+
+app.listen(3000, function(req, res){
+  console.log("Server Started on Port 3000");
+});
